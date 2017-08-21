@@ -1,7 +1,10 @@
 #!/bin/sh -eux
 
 # Set the time correctly
-ntpdate -v -b in.pool.ntp.org;
+ping -c5 0.it.pool.ntp.org
+ping -c5 1.it.pool.ntp.org
+ping -c5 2.it.pool.ntp.org
+ntpdate -v -b 0.it.pool.ntp.org 1.it.pool.ntp.org 2.it.pool.ntp.org;
 
 # Install curl and ca_root_nss
 pkg install -y curl;

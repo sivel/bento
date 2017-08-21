@@ -74,13 +74,26 @@
       "ssh_wait_timeout": "10000s",
       "tools_upload_flavor": "freebsd",
       "type": "vmware-iso",
+      "keep_registered": true,
+      "vnc_disable_password": true,
+      "disk_type_id": "thin",
+      "remote_type": "esx5",
+      "remote_host": "{{user `esxi_host`}}",
+      "remote_datastore": "{{user `esxi_datastore`}}",
+      "remote_username": "{{user `esxi_username`}}",
+      "remote_password": "{{user `esxi_password`}}",
       "vm_name": "{{ user `template` }}",
       "vmx_data": {
+        "ethernet0.networkName": "VM Network",
+        "ethernet0.present": "true",
+        "ethernet0.virtualDev": "vmxnet3",
+        "ethernet0.startConnected": "true",
+        "ethernet0.addressType": "generated",
         "cpuid.coresPerSocket": "1",
         "memsize": "{{ user `memory` }}",
         "numvcpus": "{{ user `cpus` }}"
       },
-      "vmx_remove_ethernet_interfaces": true
+      "vmx_remove_ethernet_interfaces": false
     },
     {
       "boot_command": [
@@ -173,13 +186,6 @@
       "ssh_wait_timeout": "10000s",
       "type": "qemu",
       "vm_name": "{{ user `template` }}"
-    }
-  ],
-  "post-processors": [
-    {
-      "output": "builds/{{user `box_basename`}}.{{.Provider}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "vagrantfile_templates/freebsd.rb"
     }
   ],
   "provisioners": [

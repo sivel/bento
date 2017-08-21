@@ -5,22 +5,14 @@ HOME_DIR="${HOME_DIR:-/home/vagrant}";
 
 case "$PACKER_BUILDER_TYPE" in
 vmware-iso|vmware-vmx)
-    mkdir -p /tmp/vmware-archive;
-    TOOLS_PATH="/tmp/VMwareTools-10.1.0-4449150.tar.gz";
-    VER="`echo "${TOOLS_PATH}" | cut -f2 -d'-'`";
-    MAJ_VER="`echo ${VER} | cut -d '.' -f 1`";
-
-    echo "VMware Tools Version: $VER";
-
-    tar xzf ${TOOLS_PATH} -C /tmp/vmware-archive;
-	ls -alh /tmp/vmware-archive;
-    if [ "${MAJ_VER}" -lt "10" ]; then
-        /tmp/vmware-archive/vmware-tools-distrib/vmware-install.pl --default;
+    yum install -y epel-release
+    yum install -y open-vm-tools
+    if [ -f /sbin/chkconfig ]; then
+        chkconfig vmtoolsd on
+        /etc/init.d/vmtoolsd start
     else
-        /tmp/vmware-archive/vmware-tools-distrib/vmware-install.pl --default --force-install;
+        systemctl enable vmtoolsd
+        systemctl start vmtoolsd
     fi
-    rm -rf  /tmp/vmware-archive;
-    rm -rf /tmp/VMwareTools-10.1.0-4449150.tar.gz;
-    rm -f $HOME_DIR/*.iso;
     ;;
 esac
