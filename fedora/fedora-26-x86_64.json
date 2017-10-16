@@ -153,7 +153,7 @@
         "scripts/build-tools.sh",
         "../_common/sshd.sh",
         "../_common/virtualbox.sh",
-        "../_common/vmware.sh",
+        "scripts/vmware.sh",
         "../_common/parallels.sh",
         "../_common/vagrant.sh",
         "scripts/cleanup.sh",

@@ -179,7 +179,7 @@
         "scripts/networking.sh",
         "../_common/vagrant.sh",
         "../_common/virtualbox.sh",
-        "../_common/vmware.sh",
+        "scripts/vmware.sh",
         "../_common/parallels.sh",
         "scripts/cleanup.sh",
         "../_common/minimize.sh"

@@ -215,7 +215,7 @@
         "../_common/vagrant.sh",
         "scripts/systemd.sh",
         "../_common/virtualbox.sh",
-        "../_common/vmware.sh",
+        "../ubuntu/scripts/vmware.sh",
         "../_common/parallels.sh",
         "scripts/cleanup.sh",
         "../_common/minimize.sh"

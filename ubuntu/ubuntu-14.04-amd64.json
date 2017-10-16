@@ -282,7 +282,7 @@
         "scripts/sudoers.sh",
         "scripts/vagrant.sh",
         "../_common/virtualbox.sh",
-        "../_common/vmware.sh",
+        "scripts/vmware.sh",
         "../_common/parallels.sh",
         "scripts/hyperv.sh",
         "scripts/cleanup.sh",

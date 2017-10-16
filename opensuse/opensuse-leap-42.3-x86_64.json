@@ -186,7 +186,7 @@
         "../_common/sshd.sh",
         "../_common/vagrant.sh",
         "../_common/virtualbox.sh",
-        "../_common/vmware.sh",
+        "scripts/vmware.sh",
         "../_common/parallels.sh",
         "scripts/sudoers.sh",
         "scripts/zypper-locks.sh",
