@@ -8,7 +8,7 @@
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_url": "{{user `iso_url`}}",
-      "output_directory": "../builds/packer-{{user `template`}}-vmware",
+      "output_directory": "packer-{{user `template`}}-vmware",
       "shutdown_command": "echo 'vagrant'| sudo -S shutdown -h now",
       "skip_compaction": true,
       "ssh_password": "vagrant",
