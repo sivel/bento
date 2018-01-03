@@ -1,0 +1,142 @@
+{
+  "variables": {
+    "box_basename": "tinycore-8.2",
+    "build_timestamp": "{{isotime \"20060102150405\"}}",
+    "cpus": "1",
+    "disk_size": "40960",
+    "git_revision": "__unknown_git_revision__",
+    "headless": "",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "hyperv_generation": "2",
+    "hyperv_switch": "{{env `hyperv_switch`}}",
+    "iso_checksum": "dc5f86a8ca70483bf5c0017b2b5c7d66a674832361729c39fff1d572600e7ef6",
+    "iso_checksum_type": "sha256",
+    "iso_name": "CorePure64-8.2.1.iso",
+    "memory": "1024",
+    "mirror": "http://www.tinycorelinux.net",
+    "mirror_directory": "8.x/x86_64/release",
+    "name": "tinycore-8.2",
+    "no_proxy": "{{env `no_proxy`}}",
+    "template": "tinycore-8.2-x86_64",
+    "version": "TIMESTAMP"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "corepure64 host={{user `template`}} user=vagrant tz=UTC<enter><wait10>",
+        "tce-load -wi tc-install<enter><wait10><wait10><wait10>",
+        "sudo tc-install.sh<enter><wait>",
+        "c<enter><wait>",
+        "f<enter><wait>",
+        "1<enter><wait>",
+        "y<enter><wait>",
+        "<enter><wait>",
+        "3<enter><wait>",
+        "tce=sda1 home=sda1 opt=sda1 host={{user `template`}} user=vagrant tz=UTC<enter><wait>",
+        "y<enter><wait>",
+        "<wait10><wait10>",
+        "<enter><wait>",
+        "sudo reboot<enter>",
+        "<wait10>",
+        "echo vagrant:vagrant | sudo chpasswd<enter><wait>",
+        "sudo -s<enter><wait>",
+        "echo 'echo vagrant:vagrant | sudo chpasswd > /dev/null 2>&1' >> /opt/bootlocal.sh<enter><wait>",
+        "exit<enter><wait>",
+        "tce-load -wi openssh<enter><wait10>",
+        "echo usr/local/etc/ssh >> /opt/.filetool.lst<enter><wait>",
+        "sudo -s<enter><wait>",
+        "echo '/usr/local/etc/init.d/openssh start > /dev/null 2>&1' >> /opt/bootlocal.sh<enter><wait>",
+        "exit<enter><wait>",
+        "sudo cp /usr/local/etc/ssh/sshd_config.orig /usr/local/etc/ssh/sshd_config<enter><wait>",
+        "yes | backup<enter><wait>",
+        "sudo /usr/local/etc/init.d/openssh start<enter>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "other3xlinux-64",
+      "headless": "{{ user `headless` }}",
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+      "output_directory": "packer-{{user `template`}}-vmware",
+      "shutdown_command": "sudo poweroff",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "linux",
+      "type": "vmware-iso",
+      "keep_registered": true,
+      "vnc_disable_password": true,
+      "disk_type_id": "thin",
+      "remote_type": "esx5",
+      "remote_host": "{{user `esxi_host`}}",
+      "remote_datastore": "{{user `esxi_datastore`}}",
+      "remote_username": "{{user `esxi_username`}}",
+      "remote_password": "{{user `esxi_password`}}",
+      "vm_name": "{{ user `template` }}",
+      "vmx_data": {
+        "ethernet0.networkName": "VM Network",
+        "ethernet0.present": "true",
+        "ethernet0.virtualDev": "vmxnet3",
+        "ethernet0.startConnected": "true",
+        "ethernet0.addressType": "generated",
+        "cpuid.coresPerSocket": "1",
+        "memsize": "{{ user `memory` }}",
+        "numvcpus": "{{ user `cpus` }}",
+        "ide0:0.present": "TRUE",
+        "ide0:0.fileName": "disk.vmdk",
+        "ide0:0.deviceType": "disk",
+        "scsi0:0.present": "FALSE"
+      },
+      "vmx_remove_ethernet_interfaces": false
+    }
+  ],
+  "provisioners": [
+    {
+      "environment_vars": [
+        "HOME_DIR=/home/vagrant",
+        "http_proxy={{user `http_proxy`}}",
+        "https_proxy={{user `https_proxy`}}",
+        "no_proxy={{user `no_proxy`}}"
+      ],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
+      "expect_disconnect": true,
+      "scripts": [
+        "scripts/sshd.sh"
+      ],
+      "type": "shell"
+    },
+    {
+      "environment_vars": [
+        "HOME_DIR=/home/vagrant",
+        "http_proxy={{user `http_proxy`}}",
+        "https_proxy={{user `https_proxy`}}",
+        "no_proxy={{user `no_proxy`}}"
+      ],
+      "expect_disconnect": true,
+      "scripts": [
+        "../_common/vagrant.sh",
+        "scripts/vmware.sh",
+        "scripts/cleanup.sh"
+      ],
+      "type": "shell"
+    },
+    {
+      "environment_vars": [
+        "HOME_DIR=/home/vagrant",
+        "http_proxy={{user `http_proxy`}}",
+        "https_proxy={{user `https_proxy`}}",
+        "no_proxy={{user `no_proxy`}}"
+      ],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
+      "expect_disconnect": true,
+      "scripts": [
+        "scripts/minimize.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
