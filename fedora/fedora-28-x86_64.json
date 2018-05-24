@@ -139,12 +139,6 @@
       "vm_name": "{{ user `template` }}"
     }
   ],
-  "post-processors": [
-    {
-      "output": "../builds/{{user `box_basename`}}.{{.Provider}}.box",
-      "type": "vagrant"
-    }
-  ],
   "provisioners": [
     {
       "environment_vars": [
