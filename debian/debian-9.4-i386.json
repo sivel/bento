@@ -22,7 +22,7 @@
       "boot_wait": "10s",
       "disk_size": "{{user `disk_size`}}",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "guest_os_type": "Debian_64",
+      "guest_os_type": "Debian",
       "hard_drive_interface": "sata",
       "headless": "{{ user `headless` }}",
       "http_directory": "http",
@@ -74,15 +74,13 @@
       ],
       "boot_wait": "10s",
       "disk_size": "{{user `disk_size`}}",
-      "guest_os_type": "debian8-64",
+      "guest_os_type": "debian8",
       "headless": "{{ user `headless` }}",
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
-      "output_directory": "builds/packer-{{user `template`}}-vmware",
-      "skip_export": false,
-      "format": "ova",
+      "output_directory": "packer-{{user `template`}}-vmware",
       "shutdown_command": "echo 'vagrant' | sudo -S /sbin/shutdown -hP now",
       "ssh_password": "vagrant",
       "ssh_port": 22,
@@ -90,27 +88,14 @@
       "ssh_wait_timeout": "10000s",
       "tools_upload_flavor": "linux",
       "type": "vmware-iso",
-      "keep_registered": false,
-      "vnc_disable_password": true,
-      "disk_type_id": "thin",
-      "remote_type": "esx5",
-      "remote_host": "{{user `esxi_host`}}",
-      "remote_datastore": "{{user `esxi_datastore`}}",
-      "remote_username": "{{user `esxi_username`}}",
-      "remote_password": "{{user `esxi_password`}}",
       "vm_name": "{{ user `template` }}",
       "vmx_data": {
-        "ethernet0.networkName": "VM Network",
-        "ethernet0.present": "true",
-        "ethernet0.virtualDev": "vmxnet3",
-        "ethernet0.startConnected": "true",
-        "ethernet0.addressType": "generated",
         "cpuid.coresPerSocket": "1",
         "ethernet0.pciSlotNumber": "32",
         "memsize": "{{ user `memory` }}",
         "numvcpus": "{{ user `cpus` }}"
       },
-      "vmx_remove_ethernet_interfaces": false
+      "vmx_remove_ethernet_interfaces": true
     },
     {
       "boot_command": [
@@ -199,6 +184,12 @@
       "vm_name": "{{ user `template` }}"
     }
   ],
+  "post-processors": [
+    {
+      "output": "../builds/{{user `box_basename`}}.{{.Provider}}.box",
+      "type": "vagrant"
+    }
+  ],
   "provisioners": [
     {
       "environment_vars": [
@@ -217,7 +208,7 @@
         "../_common/vagrant.sh",
         "scripts/systemd.sh",
         "../_common/virtualbox.sh",
-        "../ubuntu/scripts/vmware.sh",
+        "../_common/vmware.sh",
         "../_common/parallels.sh",
         "scripts/cleanup.sh",
         "../_common/minimize.sh"
@@ -226,24 +217,24 @@
     }
   ],
   "variables": {
-    "box_basename": "debian-9.3",
+    "box_basename": "debian-9.4-i386",
     "build_timestamp": "{{isotime \"20060102150405\"}}",
     "cpus": "1",
-    "disk_size": "40960",
+    "disk_size": "65536",
     "git_revision": "__unknown_git_revision__",
     "headless": "",
     "http_proxy": "{{env `http_proxy`}}",
     "https_proxy": "{{env `https_proxy`}}",
-    "iso_checksum": "83480be837710a76fd4e75a6573ca110e06f5a7589d2d3852bdb0f45749800b3",
+    "iso_checksum": "f1da6c11c7e0ca4399a703e32c330261258bb4ba05f81d7a6f67402d182c8bf8",
     "iso_checksum_type": "sha256",
-    "iso_name": "debian-9.3.0-amd64-netinst.iso",
+    "iso_name": "debian-9.4.0-i386-netinst.iso",
     "memory": "1024",
     "mirror": "http://cdimage.debian.org/cdimage/release",
-    "mirror_directory": "9.3.0/amd64/iso-cd",
-    "name": "debian-9.2",
+    "mirror_directory": "9.4.0/i386/iso-cd",
+    "name": "debian-9.4-i386",
     "no_proxy": "{{env `no_proxy`}}",
     "preseed_path": "debian-8/preseed.cfg",
-    "template": "debian-9.3-amd64",
+    "template": "debian-9.4-i386",
     "version": "TIMESTAMP"
   }
 }

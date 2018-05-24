@@ -16,10 +16,7 @@ virtualbox-iso|virtualbox-ovf)
     echo 'vboxservice_enable="YES"' >>/etc/rc.conf;
 
     echo 'virtio_blk_load="YES"' >>/boot/loader.conf;
-    if [ "$freebsd_major" -gt 9 ]; then
-      # Appeared in FreeBSD 10
-      echo 'virtio_scsi_load="YES"' >>/boot/loader.conf;
-    fi
+    echo 'virtio_scsi_load="YES"' >>/boot/loader.conf;
     echo 'virtio_balloon_load="YES"' >>/boot/loader.conf;
     echo 'if_vtnet_load="YES"' >>/boot/loader.conf;
 
@@ -37,6 +34,13 @@ virtualbox-iso|virtualbox-ovf)
 
 vmware-iso|vmware-vmx)
     pkg install -y open-vm-tools-nox11;
+
+    # for shared folder
+    echo 'fuse_load="YES"' >>/boot/loader.conf;
+
+    # Don't waste 10 seconds waiting for boot
+    echo 'autoboot_delay="-1"' >>/boot/loader.conf;
+
     echo 'vmware_guest_vmblock_enable="YES"' >>/etc/rc.conf;
     echo 'vmware_guest_vmhgfs_enable="NO"' >>/etc/rc.conf;
     echo 'vmware_guest_vmmemctl_enable="YES"' >>/etc/rc.conf;
